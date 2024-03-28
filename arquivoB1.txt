@@ -1,1 +1,3 @@
-teste arquivoB feito pelo usuarioB
+
+teste feito pelo usuario A
+ teste arquivoB feito pelo usuarioB
