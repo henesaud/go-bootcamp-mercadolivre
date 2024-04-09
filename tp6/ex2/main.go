@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"text/tabwriter"
 )
@@ -23,13 +24,27 @@ func main() {
 		fmt.Fprintf(w, "%s\t", c)
 	}
 	fmt.Fprintln(w)
+	sum := 0.0
 	for scanner.Scan() {
 		values := strings.Split(scanner.Text(), ",")
-		for _, v := range values {
+		for idx, v := range values {
+			quantity, err := strconv.ParseFloat(values[1], 64)
+			if err != nil {
+				fmt.Println(fmt.Errorf("error parsing float"))
+			}
+
+			if idx == 2 {
+				price, err := strconv.ParseFloat(v, 64)
+				if err != nil {
+					fmt.Println(fmt.Errorf("error parsing float"))
+				}
+				sum += price * float64(quantity)
+			}
 			fmt.Fprintf(w, "%s\t", v)
 		}
 		fmt.Fprintln(w)
 	}
+	fmt.Fprintf(w, "\t\t%.2f \n", sum)
 
 	w.Flush()
 }
