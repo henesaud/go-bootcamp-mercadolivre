@@ -25,20 +25,46 @@ var transactions = []Transaction{
 	},
 }
 
-func GetAll(c *gin.Context) {
+func All(c *gin.Context) {
 	c.JSON(200, transactions)
+
+}
+
+func FindTransactionById(id string) Transaction {
+	for _, transaction := range transactions {
+		if transaction.Id == id {
+			return transaction
+		}
+	}
+	return Transaction{}
+}
+
+func TransactionById(c *gin.Context) {
+	id := c.Param("id")
+
+	t := FindTransactionById(id)
+	if t.Id == "" {
+		c.JSON(404, gin.H{"message": "Transaction not found"})
+		return
+	}
+
+	c.JSON(200, t)
 }
 
 func main() {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello, World!",
 		})
 	})
 
-	r.GET("/transactions", GetAll)
+	server := router.Group("/transactions")
+	{
+		server.GET("/", All)
+		server.GET("/:id", TransactionById)
+	}
 
-	r.Run()
+	router.Run()
 }
