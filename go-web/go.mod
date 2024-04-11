@@ -1,4 +1,4 @@
-module github.com/henesaud/go-bootcamp-mercadolivre
+module github.com/henesaud/go-bootcamp-mercadolivre/go-web
 
 go 1.22.1
 
