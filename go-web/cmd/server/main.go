@@ -17,6 +17,7 @@ func main() {
 	trns := server.Group("/transactions")
 	trns.POST("/", trnsHandler.Store)
 	trns.GET("/", trnsHandler.All)
+	trns.PUT("/:id", trnsHandler.Update)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}

@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/internal/transactions"
@@ -73,4 +74,58 @@ func (c *TransactionHandler) Store(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusCreated, p)
+}
+
+func (c *TransactionHandler) Update(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 0)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
+		return
+	}
+
+	var req Request
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println(req.Amount, req.Code, req.Currency, req.Date, req.Emiter, req.Receiver)
+
+	if req.Code == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "code is a must"})
+		return
+	}
+
+	if req.Currency == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "curency is a must"})
+		return
+	}
+
+	if req.Amount == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "amount is a must"})
+		return
+	}
+
+	if req.Emiter == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "emiter is a must"})
+		return
+	}
+
+	if req.Receiver == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "receiver is a must"})
+		return
+	}
+
+	if req.Date == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "date is a must"})
+		return
+	}
+
+	p, err := c.service.Update(id, req.Code, req.Currency, req.Emiter, req.Receiver, req.Date, req.Amount)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, p)
 }

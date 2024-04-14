@@ -3,10 +3,17 @@ package transactions
 type Service interface {
 	All() ([]Transaction, error)
 	Store(code, currency, emiter, receiver, date string, amount float64) (Transaction, error)
+	Update(id uint64, code, currency, emiter, receiver, date string, amount float64) (Transaction, error)
 }
 
 type service struct {
 	repository Repository
+}
+
+func NewService(r Repository) Service {
+	return &service{
+		repository: r,
+	}
 }
 
 func (s *service) All() ([]Transaction, error) {
@@ -28,8 +35,6 @@ func (s *service) Store(code, currency, emiter, receiver, date string, amount fl
 	return trans, nil
 }
 
-func NewService(r Repository) Service {
-	return &service{
-		repository: r,
-	}
+func (s *service) Update(id uint64, code, currency, emiter, receiver, date string, amount float64) (Transaction, error) {
+	return s.repository.Update(id, code, currency, emiter, receiver, date, amount)
 }
