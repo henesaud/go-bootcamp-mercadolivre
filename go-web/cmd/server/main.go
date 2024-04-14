@@ -1,38 +1,23 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
+	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/cmd/server/handler"
+	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/internal/transactions"
 )
 
-// var transactions = []Transaction{
-// 	{
-// 		Id:       "1",
-// 		Code:     "99",
-// 		Currency: "USD",
-// 		Amount:   100.0,
-// 		Emiter:   "Hene",
-// 		Receiver: "SS",
-// 		Date:     "2021-01-01",
-// 	},
-// 	{
-// 		Id:       "2",
-// 		Code:     "443",
-// 		Currency: "BRL",
-// 		Amount:   99.0,
-// 		Emiter:   "Caio",
-// 		Receiver: "Souza",
-// 		Date:     "2024-01-01",
-// 	},
-// }
-
 func main() {
-	router := gin.Default()
+	rep := transactions.NewRepository()
+	service := transactions.NewService(rep)
+	trnsHandler := handler.NewTransaction(service)
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello, World!",
-		})
-	})
-
-	router.Run()
+	server := gin.Default()
+	trns := server.Group("/transactions")
+	trns.POST("/", trnsHandler.Store)
+	trns.GET("/", trnsHandler.All)
+	if err := server.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
