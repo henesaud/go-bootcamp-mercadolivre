@@ -1,5 +1,7 @@
 package transactions
 
+import "github.com/henesaud/go-bootcamp-mercadolivre/go-web/pkg/store"
+
 type Repository interface {
 	All() ([]Transaction, error)
 	Store(code, currency, emiter, receiver, date string, amount float64) (Transaction, error)
@@ -9,6 +11,6 @@ type Repository interface {
 	Delete(id uint64) error
 }
 
-func NewRepository() Repository {
-	return &MemoryRepository{}
+func NewRepository(db store.Store) Repository {
+	return &FileRepository{db}
 }

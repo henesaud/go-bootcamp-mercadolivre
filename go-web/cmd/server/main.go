@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/cmd/server/handler"
 	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/internal/transactions"
+	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/pkg/store"
 	"github.com/joho/godotenv"
 )
 
@@ -38,7 +39,7 @@ func main() {
 
 	db := store.NewFileStore("file", "products.json")
 
-	rep := transactions.NewRepository()
+	rep := transactions.NewRepository(db)
 	service := transactions.NewService(rep)
 	trnsHandler := handler.NewTransaction(service)
 
@@ -52,7 +53,6 @@ func main() {
 	trns.PUT("/:id", trnsHandler.Update)
 	trns.PATCH("/:id", trnsHandler.UpdateAmount)
 	trns.DELETE("/:id", trnsHandler.Delete)
-
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}
