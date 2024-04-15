@@ -18,6 +18,10 @@ type Request struct {
 	Date     string  `json:"date"`
 }
 
+type PartialRequest struct {
+	Amount float64 `json:"amount"`
+}
+
 type TransactionHandler struct {
 	service transactions.Service
 }
@@ -128,4 +132,42 @@ func (c *TransactionHandler) Update(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, p)
+}
+
+func (c *TransactionHandler) UpdateAmount(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 0)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
+		return
+	}
+	var req PartialRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		return
+	}
+	if req.Amount <= 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "the amount must be greater than 0"})
+		return
+	}
+	t, err := c.service.UpdateAmount(id, req.Amount)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, t)
+}
+
+func (c *TransactionHandler) Delete(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 0)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "invalid ID"})
+		return
+	}
+	err = c.service.Delete(id)
+	if err != nil {
+		ctx.JSON(404, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": fmt.Sprintf("transaction %d removed", id)})
 }

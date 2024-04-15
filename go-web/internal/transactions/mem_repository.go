@@ -49,7 +49,45 @@ func (m *MemoryRepository) Update(id uint64, code, currency, emiter, receiver, d
 		}
 	}
 	if !updated {
-		return Transaction{}, fmt.Errorf("transaction %d not found", id)
+		return Transaction{}, transactionNotFoundError(id)
 	}
 	return t, nil
+}
+
+func (m *MemoryRepository) UpdateAmount(id uint64, amount float64) (Transaction, error) {
+	var t Transaction
+	updated := false
+	for i := range trans {
+		if trans[i].Id == id {
+			trans[i].Amount = amount
+			updated = true
+			t = trans[i]
+		}
+	}
+	if !updated {
+		return Transaction{}, transactionNotFoundError(id)
+	}
+
+	return t, nil
+}
+
+func (r *MemoryRepository) Delete(id uint64) error {
+	deleted := false
+	var index int
+	for i := range trans {
+		if trans[i].Id == id {
+			index = i
+			deleted = true
+		}
+	}
+	if !deleted {
+		return transactionNotFoundError(id)
+	}
+
+	trans = append(trans[:index], trans[index+1:]...)
+	return nil
+}
+
+func transactionNotFoundError(id uint64) error {
+	return fmt.Errorf("transaction %d not found", id)
 }

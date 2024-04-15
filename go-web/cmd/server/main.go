@@ -18,6 +18,8 @@ func main() {
 	trns.POST("/", trnsHandler.Store)
 	trns.GET("/", trnsHandler.All)
 	trns.PUT("/:id", trnsHandler.Update)
+	trns.PATCH("/:id", trnsHandler.UpdateAmount)
+	trns.DELETE("/:id", trnsHandler.Delete)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}

@@ -4,6 +4,8 @@ type Service interface {
 	All() ([]Transaction, error)
 	Store(code, currency, emiter, receiver, date string, amount float64) (Transaction, error)
 	Update(id uint64, code, currency, emiter, receiver, date string, amount float64) (Transaction, error)
+	UpdateAmount(id uint64, amount float64) (Transaction, error)
+	Delete(id uint64) error
 }
 
 type service struct {
@@ -37,4 +39,12 @@ func (s *service) Store(code, currency, emiter, receiver, date string, amount fl
 
 func (s *service) Update(id uint64, code, currency, emiter, receiver, date string, amount float64) (Transaction, error) {
 	return s.repository.Update(id, code, currency, emiter, receiver, date, amount)
+}
+
+func (s *service) UpdateAmount(id uint64, amount float64) (Transaction, error) {
+	return s.repository.UpdateAmount(id, amount)
+}
+
+func (s *service) Delete(id uint64) error {
+	return s.repository.Delete(id)
 }
