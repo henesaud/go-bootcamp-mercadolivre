@@ -1,0 +1,18 @@
+1- Quais são as diferenças entre a caixa branca e a caixa preta?
+    No modelo de caixa preto, preocupa-se somente com as entradas e saidas, sem entendimento das implementacoes e internas do objeto a ser testado.
+    Ja no modelo de caixa branca, as particularidades internas sao testadas.
+
+
+2-  O que é um teste funcional?
+    Sao testes que verificam as saidas dadas certas entradas. Sa saidas sao usadas para garantir requisitos funcionais. Geralmennte, usa-se um golden model (modelo ideal) para checar as saidas desejadas
+
+3- O que é um teste de integração?
+    Sao testes usados para testar a integracao de diferentes modulos e se eles estao se comportante corretamente em conjunto. 
+
+
+4- Dimensões de qualidade prioritárias do Mercado Livre:
+    Funcionalidade (como o software atende aos requisitos);
+    Atuacao (como o software performa em termos de desempenho e rapidez);
+    Confiabilidade (quao improvavel eh do software executar com comportamento desejado);
+    Seguranca (quao improvavel eh de um agente externo invadir o software ou tirar proveito danoso para o mercado livre);
+    Manutenabilidade (quao facil eh de se fazer alteracoes, extensoes e de se manter o sistema funcionando);
