@@ -16,7 +16,10 @@ func NewFileRepository(db store.Store) Repository {
 
 func (r *FileRepository) All() ([]Transaction, error) {
 	var ps []Transaction
-	r.db.Read(&ps)
+	err := r.db.Read(&ps)
+	if err != nil {
+		return nil, err
+	}
 	return ps, nil
 }
 
