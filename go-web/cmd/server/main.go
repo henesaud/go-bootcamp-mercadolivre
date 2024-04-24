@@ -37,7 +37,7 @@ func main() {
 		log.Fatal("error loading .env file", err)
 	}
 
-	db := store.NewFileStore("file", "products.json")
+	db := store.NewFileStore("file", "transactions.json")
 
 	rep := transactions.NewRepository(db)
 	service := transactions.NewService(rep)

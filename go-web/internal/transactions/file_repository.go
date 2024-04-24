@@ -1,8 +1,6 @@
 package transactions
 
 import (
-	"fmt"
-
 	"github.com/henesaud/go-bootcamp-mercadolivre/go-web/pkg/store"
 )
 
@@ -50,8 +48,6 @@ func (r *FileRepository) Store(code, currency, emiter, receiver, date string, am
 }
 
 func (r *FileRepository) Delete(id uint64) error {
-	fmt.Println("aqui", id)
-
 	var trns []Transaction
 
 	r.db.Read(&trns)
