@@ -11,8 +11,9 @@ type FileStoreMock struct {
 }
 
 type Mock struct {
-	Data []byte
-	Err  error
+	Data          []byte
+	Err           error
+	HasCalledRead bool
 }
 
 func (fs *FileStoreMock) AddMock(mock *Mock) {
@@ -37,6 +38,7 @@ func (fs *FileStoreMock) Write(data interface{}) error {
 }
 
 func (fs *FileStoreMock) Read(data interface{}) error {
+	fs.Mock.HasCalledRead = true
 	if fs.Mock != nil {
 		if fs.Mock.Err != nil {
 			return fs.Mock.Err

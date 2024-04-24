@@ -45,3 +45,43 @@ func TestAll(t *testing.T) {
 
 	assert.Equal(t, input, resp)
 }
+
+func TestUpdate(t *testing.T) {
+	currentTransactions := []Transaction{{
+		Id:       1,
+		Code:     "oldCode",
+		Currency: "oldCurrency",
+		Amount:   100.0,
+		Emiter:   "oldEmiter",
+		Receiver: "oldReceiver",
+		Date:     "oldDate",
+	},
+	}
+	newTransaction := Transaction{
+		Id:       1,
+		Code:     "newCode",
+		Currency: "newCurrency",
+		Amount:   200.0,
+		Emiter:   "newEmiter",
+		Receiver: "newReceiver",
+		Date:     "newDate",
+	}
+
+	dataJson, _ := json.Marshal(currentTransactions)
+
+	dbMock := store.Mock{
+		Data:          dataJson,
+		HasCalledRead: false,
+	}
+
+	storeStub := store.FileStoreMock{
+		FileName: "",
+		Mock:     &dbMock,
+	}
+
+	myRepo := NewRepository(&storeStub)
+
+	resp, _ := myRepo.UpdateAmount(newTransaction.Id, newTransaction.Amount)
+	assert.Equal(t, newTransaction.Amount, resp.Amount)
+	assert.Equal(t, true, dbMock.HasCalledRead)
+}
