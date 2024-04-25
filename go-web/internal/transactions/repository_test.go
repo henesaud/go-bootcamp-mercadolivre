@@ -47,8 +47,9 @@ func TestAll(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
+	id := uint64(1)
 	currentTransactions := []Transaction{{
-		Id:       1,
+		Id:       id,
 		Code:     "oldCode",
 		Currency: "oldCurrency",
 		Amount:   100.0,
@@ -58,7 +59,7 @@ func TestUpdate(t *testing.T) {
 	},
 	}
 	newTransaction := Transaction{
-		Id:       1,
+		Id:       id,
 		Code:     "newCode",
 		Currency: "newCurrency",
 		Amount:   200.0,
@@ -81,7 +82,7 @@ func TestUpdate(t *testing.T) {
 
 	myRepo := NewRepository(&storeStub)
 
-	resp, _ := myRepo.UpdateAmount(newTransaction.Id, newTransaction.Amount)
+	resp, _ := myRepo.UpdateAmount(id, newTransaction.Amount)
 	assert.Equal(t, newTransaction.Amount, resp.Amount)
 	assert.Equal(t, true, dbMock.HasCalledRead)
 }
