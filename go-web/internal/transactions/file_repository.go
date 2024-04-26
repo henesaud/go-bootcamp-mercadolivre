@@ -35,7 +35,10 @@ func (r *FileRepository) Store(code, currency, emiter, receiver, date string, am
 
 	var trns []Transaction
 
-	r.db.Read(&trns)
+	err := r.db.Read(&trns)
+	if err != nil {
+		return Transaction{}, err
+	}
 
 	lastIdInserted := len(trns)
 	lastIdInserted++
@@ -43,7 +46,7 @@ func (r *FileRepository) Store(code, currency, emiter, receiver, date string, am
 
 	trns = append(trns, t)
 
-	err := r.db.Write(trns)
+	err = r.db.Write(trns)
 	if err != nil {
 		return Transaction{}, err
 	}
@@ -53,7 +56,10 @@ func (r *FileRepository) Store(code, currency, emiter, receiver, date string, am
 func (r *FileRepository) Delete(id uint64) error {
 	var trns []Transaction
 
-	r.db.Read(&trns)
+	err := r.db.Read(&trns)
+	if err != nil {
+		return err
+	}
 
 	deleted := false
 	var index int
@@ -68,7 +74,7 @@ func (r *FileRepository) Delete(id uint64) error {
 	}
 	trns = append(trns[:index], trns[index+1:]...)
 
-	err := r.db.Write(trns)
+	err = r.db.Write(trns)
 	if err != nil {
 		return err
 	}
@@ -77,7 +83,10 @@ func (r *FileRepository) Delete(id uint64) error {
 
 func (r *FileRepository) Update(id uint64, code, currency, emiter, receiver, date string, amount float64) (Transaction, error) {
 	var trns []Transaction
-	r.db.Read(&trns)
+	err := r.db.Read(&trns)
+	if err != nil {
+		return Transaction{}, err
+	}
 
 	t := Transaction{
 		Code:     code,
@@ -100,7 +109,7 @@ func (r *FileRepository) Update(id uint64, code, currency, emiter, receiver, dat
 		return Transaction{}, transactionNotFoundError(id)
 	}
 
-	err := r.db.Write(trns)
+	err = r.db.Write(trns)
 	if err != nil {
 		return Transaction{}, err
 	}
@@ -108,7 +117,10 @@ func (r *FileRepository) Update(id uint64, code, currency, emiter, receiver, dat
 }
 func (r *FileRepository) UpdateAmount(id uint64, amount float64) (Transaction, error) {
 	var trns []Transaction
-	r.db.Read(&trns)
+	err := r.db.Read(&trns)
+	if err != nil {
+		return Transaction{}, err
+	}
 
 	var t Transaction
 	updated := false
@@ -123,7 +135,7 @@ func (r *FileRepository) UpdateAmount(id uint64, amount float64) (Transaction, e
 		return Transaction{}, transactionNotFoundError(id)
 	}
 
-	err := r.db.Write(trns)
+	err = r.db.Write(trns)
 	if err != nil {
 		return Transaction{}, err
 	}
