@@ -30,6 +30,12 @@ func TokenMiddleware(ctx *gin.Context) {
 	ctx.Next()
 }
 
+func genDbFile(fileName string) {
+	if _, err := os.Stat(fileName); err != nil {
+		os.WriteFile(fileName, []byte("[]"), 0644)
+	}
+}
+
 func main() {
 
 	err := godotenv.Load()
@@ -37,7 +43,9 @@ func main() {
 		log.Fatal("error loading .env file", err)
 	}
 
-	db := store.NewFileStore("file", "transactions.json")
+	dbFileName := "transactions.json"
+	genDbFile(dbFileName)
+	db := store.NewFileStore("file", dbFileName)
 
 	rep := transactions.NewRepository(db)
 	service := transactions.NewService(rep)
